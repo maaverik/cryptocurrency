@@ -15,7 +15,7 @@ class Block {
         return new this(GENESIS_DATA);
     }
 
-    static mineBlock(lastBlock, data) {
+    static mineBlock({ lastBlock, data }) {
         // create a new block in the chain
         const timestamp = Date.now();
         const lastHash = lastBlock.hash;
