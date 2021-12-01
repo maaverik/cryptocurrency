@@ -4,10 +4,10 @@ const INITIAL_DIFFICULTY = 3;
 
 // this is the first block in the chain with random hardcoded values
 const GENESIS_DATA = {
-    timestamp: "01/01/70",
-    hash: "hash",
+    timestamp: 50000,
+    hash: "000fff",
     data: [],
-    lastHash: "___",
+    lastHash: "ff0ff",
     difficulty: INITIAL_DIFFICULTY,
     nonce: 0,
 };
