@@ -7,6 +7,7 @@ class Blockchain {
     }
 
     addBlock({ data }) {
+        // mine a new block and add to the current chain
         const newBlock = Block.mineBlock({
             lastBlock: this.chain[this.chain.length - 1],
             data,
@@ -15,6 +16,7 @@ class Blockchain {
     }
 
     static isValidChain(chain) {
+        // check if given chain satisfies lastHash reference equality
         const genesis = JSON.stringify(Block.genesis());
         // not strict equality check, only check equality of property values
         if (JSON.stringify(chain[0]) !== genesis) {
@@ -23,12 +25,19 @@ class Blockchain {
 
         for (let i = 1; i < chain.length; i++) {
             const realLastHash = chain[i - 1].hash;
-            const { data, timestamp, hash, lastHash } = chain[i];
+            const { data, timestamp, hash, lastHash, nonce, difficulty } =
+                chain[i];
             if (lastHash !== realLastHash) {
                 return false;
             }
 
-            const validHash = cryptoHash(timestamp, data, lastHash);
+            const validHash = cryptoHash(
+                timestamp,
+                data,
+                lastHash,
+                nonce,
+                difficulty
+            );
             if (hash !== validHash) {
                 return false;
             }
@@ -38,6 +47,7 @@ class Blockchain {
     }
 
     replaceChain(newChain) {
+        // replace existing chain with new one if new one is longer and valid
         if (newChain.length <= this.chain.length) {
             console.error("The new chain is not longer than the exisitng one");
             return;

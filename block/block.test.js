@@ -7,14 +7,25 @@ describe("Block", () => {
     const hash = "hash";
     const data = ["data"];
     const lastHash = "lastHash";
+    const nonce = 1;
+    const difficulty = 5;
 
-    const block = new Block({ timestamp, hash, data, lastHash });
+    const block = new Block({
+        timestamp,
+        hash,
+        data,
+        lastHash,
+        nonce,
+        difficulty,
+    });
 
-    it("has the timestamp, data, hash, and lastHash properties", () => {
+    it("has all required properties", () => {
         expect(block.timestamp).toEqual(timestamp);
         expect(block.hash).toEqual(hash);
         expect(block.data).toEqual(data);
         expect(block.lastHash).toEqual(lastHash);
+        expect(block.nonce).toEqual(nonce);
+        expect(block.difficulty).toEqual(difficulty);
     });
 
     describe("genesis()", () => {
@@ -44,7 +55,13 @@ describe("Block", () => {
 
         it("sets the `hash` property equal to the SHA hash of other properties", () => {
             expect(minedBlock.hash).toEqual(
-                cryptoHash(lastBlock.hash, data, minedBlock.timestamp)
+                cryptoHash(
+                    lastBlock.hash,
+                    data,
+                    minedBlock.timestamp,
+                    minedBlock.nonce,
+                    minedBlock.difficulty
+                )
             );
         });
 
@@ -54,6 +71,15 @@ describe("Block", () => {
 
         it("sets a timestamp", () => {
             expect(minedBlock.timestamp).not.toEqual(undefined);
+        });
+
+        it("sets a `hash` that matches the diffculty criteria", () => {
+            // check proof of work
+            const hashSubstring = minedBlock.hash.substring(
+                0,
+                minedBlock.difficulty
+            );
+            expect(hashSubstring).toEqual("0".repeat(minedBlock.difficulty));
         });
     });
 });
