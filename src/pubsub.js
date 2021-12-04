@@ -36,7 +36,13 @@ class PubSub {
     }
 
     publish({ channel, message }) {
-        this.publisher.publish(channel, message);
+        // while publishing, we don't want to receive the message on the same instance,
+        // so unsubscribe first, then publish, the nsubscribe again
+        this.subscriber.unsubscribe(channel, () => {
+            this.publisher.publish(channel, message, () => {
+                this.subscriber.subscribe(channel);
+            });
+        });
     }
 
     broadcastChain() {
