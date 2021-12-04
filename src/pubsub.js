@@ -49,7 +49,3 @@ class PubSub {
 }
 
 module.exports = PubSub;
-
-// const testPubSub = new PubSub();
-
-// setTimeout(() => testPubSub.publisher.publish(CHANNELS.TEST, "foo"), 1000);
