@@ -1,3 +1,5 @@
+// Generic blockchain stuff ->
+
 const MINE_RATE = 1000; // optimal time taken to mine new block, in milliseconds
 
 const INITIAL_DIFFICULTY = 3;
@@ -12,4 +14,8 @@ const GENESIS_DATA = {
     nonce: 0,
 };
 
-module.exports = { GENESIS_DATA, MINE_RATE };
+// Cryptocurrency specific stuff
+
+// giving some balance to everyone to start the economy
+const STARTING_BALANCE = 1000;
+module.exports = { GENESIS_DATA, MINE_RATE, STARTING_BALANCE };
