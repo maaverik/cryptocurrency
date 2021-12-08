@@ -1,4 +1,5 @@
 const Wallet = require("./wallet");
+const { verifySignature } = require("../utils");
 
 describe("Wallet", () => {
     let wallet;
@@ -15,5 +16,27 @@ describe("Wallet", () => {
         expect(wallet).toHaveProperty("publicKey");
     });
 
-    it("has a balance", () => {});
+    describe("signing data", () => {
+        const data = "dummy";
+
+        it("verifies a signature", () => {
+            expect(
+                verifySignature({
+                    publicKey: wallet.publicKey,
+                    data,
+                    signature: wallet.sign(data),
+                })
+            ).toBe(true);
+        });
+
+        it("doesn't verify invalid signature", () => {
+            expect(
+                verifySignature({
+                    publicKey: wallet.publicKey,
+                    data,
+                    signature: new Wallet().sign(data),
+                })
+            ).toBe(false);
+        });
+    });
 });

@@ -25,6 +25,7 @@
         "elliptic": "^6.5.4",
         "express": "^4.17.1",
         "hex-to-binary": "^1.0.1",
-        "redis": "^3.1.2"
+        "redis": "^3.1.2",
+        "uuid": "^8.3.2"
     }
 }
