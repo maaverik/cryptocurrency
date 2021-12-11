@@ -5,10 +5,10 @@
     "main": "index.js",
     "scripts": {
         "test": "jest --watchAll",
-        "start": "node src/api/index.js",
-        "dev": "npm run start-redis && nodemon src/api/index.js",
+        "start": "node src/index.js",
+        "dev": "npm run start-redis && nodemon src/index.js",
         "start-redis": "redis-server --daemonize yes",
-        "dev-peer": "cross-env GENERATE_PEER_PORT='true' nodemon src/api/index.js"
+        "dev-peer": "cross-env GENERATE_PEER_PORT='true' nodemon src/index.js"
     },
     "keywords": [],
     "author": "",
