@@ -9,11 +9,11 @@ const Wallet = require("./wallet");
 
 const app = express();
 const blockchain = new Blockchain();
-const pubsub = new PubSub({ blockchain });
 const transactionPool = new TransactionPool();
+const pubsub = new PubSub({ blockchain, transactionPool });
 const wallet = new Wallet();
 
-const DEFAULT_PORT = 5000;
+const DEFAULT_PORT = 5100;
 const ROOT_NODE_ADDRESS = `http://localhost:${DEFAULT_PORT}`;
 
 app.use(bodyParser.json());
@@ -48,10 +48,15 @@ app.post("/api/transaction", (req, res) => {
     } catch (error) {
         return res.status(400).json({ type: "error", message: error.message });
     }
-    transactionPool.setTransaction(transaction);
 
-    console.log("Transaction pool: ", transactionPool);
+    transactionPool.setTransaction(transaction);
+    pubsub.broadcastTransaction(transaction);
+
     res.json({ type: "success", transaction });
+});
+
+app.get("/api/transaction-pool-map", (req, res) => {
+    res.json(transactionPool.transactionMap);
 });
 
 // sync new peer with existing root peer to get longest valid chain
@@ -72,6 +77,33 @@ const syncChains = async () => {
     }
 };
 
+const syncTransactions = async () => {
+    const response = await axios
+        .get(`${ROOT_NODE_ADDRESS}/api/transaction-pool-map`)
+        .catch((err) => {
+            console.error(`GET /transaction-pool-map failed due to ${err}`);
+            return;
+        });
+    if (response.status == 200) {
+        const transactionPoolMap = response.data;
+
+        console.log(
+            "Replacing transaction pool map on a sync with",
+            transactionPoolMap
+        );
+        transactionPool.setMap(transactionPoolMap);
+    } else {
+        console.error(
+            `GET /transaction-pool-map returned status ${response.status}`
+        );
+    }
+};
+
+const syncWithRootState = async () => {
+    syncChains();
+    syncTransactions();
+};
+
 let PEER_PORT;
 
 // eslint-disable-next-line no-undef
@@ -86,6 +118,6 @@ app.listen(PORT, () => {
     console.log(`App listening on localhost:${PORT}`);
     if (PORT !== DEFAULT_PORT) {
         // don't run on root instance, since it tries to sync with itself
-        syncChains();
+        syncWithRootState();
     }
 });

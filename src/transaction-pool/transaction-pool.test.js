@@ -23,6 +23,24 @@ describe("TransactionPool", () => {
             );
         });
     });
+
+    describe("setMap()", () => {
+        it("sets the transaction pool", () => {
+            const newTransactionPool = new TransactionPool();
+            const newTransaction = new Transaction({
+                senderWallet,
+                amount: 50,
+                recipient: "dummy",
+            });
+            newTransactionPool.setTransaction(newTransaction);
+
+            transactionPool.setMap(newTransactionPool.transactionMap);
+            expect(transactionPool.transactionMap).toBe(
+                newTransactionPool.transactionMap
+            );
+        });
+    });
+
     describe("getExistingTransaction()", () => {
         it("returns an existing transaction given an input address", () => {
             transactionPool.setTransaction(transaction);
