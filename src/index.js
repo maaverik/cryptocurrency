@@ -6,12 +6,19 @@ const Blockchain = require("./blockchain");
 const PubSub = require("./app/pubsub");
 const TransactionPool = require("./transaction-pool");
 const Wallet = require("./wallet");
+const TransactionMiner = require("./app/transaction-miner");
 
 const app = express();
 const blockchain = new Blockchain();
 const transactionPool = new TransactionPool();
 const pubsub = new PubSub({ blockchain, transactionPool });
 const wallet = new Wallet();
+const transactionMiner = new TransactionMiner({
+    blockchain,
+    transactionPool,
+    wallet,
+    pubsub,
+});
 
 const DEFAULT_PORT = 5100;
 const ROOT_NODE_ADDRESS = `http://localhost:${DEFAULT_PORT}`;
@@ -55,8 +62,15 @@ app.post("/api/transaction", (req, res) => {
     res.json({ type: "success", transaction });
 });
 
+// get the transaction map of all pending transactions in the pool
 app.get("/api/transaction-pool-map", (req, res) => {
     res.json(transactionPool.transactionMap);
+});
+
+// mine a block for pending transactions
+app.get("/api/mine-transactions", (req, res) => {
+    transactionMiner.mineTransactions();
+    res.redirect("/api/blocks");
 });
 
 // sync new peer with existing root peer to get longest valid chain

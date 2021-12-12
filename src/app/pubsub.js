@@ -34,7 +34,12 @@ class PubSub {
         const parsedMessage = JSON.parse(message);
         switch (channel) {
             case CHANNELS.BLOCKCHAIN:
-                this.blockchain.replaceChain(parsedMessage);
+                // clean up any mined transactions from local pool instance while replacing chain
+                this.blockchain.replaceChain(parsedMessage, () => {
+                    this.transactionPool.clearBlockchainTransactions({
+                        chain: parsedMessage,
+                    });
+                });
                 break;
             case CHANNELS.TRANSACTION:
                 this.transactionPool.setTransaction(parsedMessage);
