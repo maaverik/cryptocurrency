@@ -1,3 +1,5 @@
+const Transaction = require("../transaction");
+
 class TransactionPool {
     // collect transactions to be put on a new mined block
     constructor() {
@@ -17,6 +19,13 @@ class TransactionPool {
         return transactions.find(
             (transaction) => transaction.input.address === inputAddress
         );
+    }
+
+    validTransactions() {
+        const validTransactions = Object.values(this.transactionMap).filter(
+            (transaction) => Transaction.validTransaction(transaction)
+        );
+        return validTransactions;
     }
 }
 

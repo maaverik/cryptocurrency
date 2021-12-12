@@ -3,7 +3,7 @@ const bodyParser = require("body-parser");
 const axios = require("axios");
 
 const Blockchain = require("./blockchain");
-const PubSub = require("./pubsub");
+const PubSub = require("./app/pubsub");
 const TransactionPool = require("./transaction-pool");
 const Wallet = require("./wallet");
 
