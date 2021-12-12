@@ -15,6 +15,7 @@ class TransactionPool {
     }
 
     getExistingTransaction({ inputAddress }) {
+        // this is to keep on updating a transaction created by a wallet instead of overwriting it
         const transactions = Object.values(this.transactionMap);
         return transactions.find(
             (transaction) => transaction.input.address === inputAddress
@@ -22,10 +23,27 @@ class TransactionPool {
     }
 
     validTransactions() {
-        const validTransactions = Object.values(this.transactionMap).filter(
-            (transaction) => Transaction.validTransaction(transaction)
+        return Object.values(this.transactionMap).filter((transaction) =>
+            Transaction.validTransaction(transaction)
         );
-        return validTransactions;
+    }
+
+    clear() {
+        // this is what miners call after a block is mined
+        this.transactionMap = {};
+    }
+
+    clearBlockchainTransactions({ chain }) {
+        // clear transactions from pool that are already in a given blockchain, this is what peers call
+        // skipping genesis block
+        for (let i = 1; i < chain.length; i++) {
+            const block = chain[i];
+            for (let transaction of block.data) {
+                if (this.transactionMap[transaction.id]) {
+                    delete this.transactionMap[transaction.id];
+                }
+            }
+        }
     }
 }
 
