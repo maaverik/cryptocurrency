@@ -38,7 +38,7 @@ class Transaction {
         };
     }
 
-    static validTransaction(transaction) {
+    static isValidTransaction(transaction) {
         const { input, outputMap } = transaction;
         const { address, amount, signature } = input;
 
