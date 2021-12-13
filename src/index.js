@@ -77,6 +77,18 @@ app.get("/api/mine-transactions", (req, res) => {
     res.redirect("/api/blocks");
 });
 
+// get wallet balance and public address
+app.get("/api/wallet", (req, res) => {
+    const address = wallet.publicKey;
+    res.json({
+        address,
+        balance: Wallet.calculateBalance({
+            chain: blockchain.chain,
+            address,
+        }),
+    });
+});
+
 // sync new peer with existing root peer to get longest valid chain
 const syncChains = async () => {
     const response = await axios

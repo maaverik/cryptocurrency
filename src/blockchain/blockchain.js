@@ -55,15 +55,22 @@ class Blockchain {
         return true;
     }
 
-    replaceChain(newChain, onSuccess) {
+    replaceChain(incomingChain, onSuccess) {
         // replace existing chain with new one if new one is longer and valid
-        if (newChain.length <= this.chain.length) {
-            console.error("The new chain is not longer than the exisitng one");
+        if (incomingChain.length <= this.chain.length) {
+            console.error(
+                "The incoming chain is not longer than the exisitng one"
+            );
             return;
         }
 
-        if (!Blockchain.isValidChain(newChain)) {
-            console.error("The new chain is invalid");
+        if (!Blockchain.isValidChain(incomingChain)) {
+            console.error("The incoming chain is invalid");
+            return;
+        }
+
+        if (!this.isValidTransactionData({ chain: incomingChain })) {
+            console.error("The incoming chain has invalid transaction data");
             return;
         }
 
@@ -71,8 +78,8 @@ class Blockchain {
             onSuccess();
         }
 
-        console.log("Replacing chain with", newChain);
-        this.chain = newChain;
+        console.log("Replacing chain with", incomingChain);
+        this.chain = incomingChain;
     }
 
     isValidTransactionData({ chain }) {

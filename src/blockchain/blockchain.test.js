@@ -3,6 +3,7 @@ const Block = require("../block");
 const { cryptoHash } = require("../utils");
 const Wallet = require("../wallet");
 const Transaction = require("../transaction");
+const { STARTING_BALANCE } = require("../config");
 
 describe("Blockchain", () => {
     let blockchain, newBlockchain, errorMock;
@@ -135,10 +136,48 @@ describe("Blockchain", () => {
         });
 
         describe("when the new chain is longer", () => {
+            let wallet, rewardTransaction;
             beforeEach(() => {
-                newBlockchain.addBlock({ data: "abc" });
-                newBlockchain.addBlock({ data: "def" });
-                newBlockchain.addBlock({ data: "ghi" });
+                wallet = new Wallet();
+                rewardTransaction = Transaction.rewardTransaction({
+                    minerWallet: wallet,
+                });
+
+                const goodOutputMap = {
+                    [wallet.publicKey]: STARTING_BALANCE - 10,
+                    fooRecipient: 10,
+                };
+
+                const goodTransaction = {
+                    input: {
+                        timestamp: Date.now(),
+                        amount: wallet.balance,
+                        address: wallet.publicKey,
+                        signature: wallet.sign(goodOutputMap),
+                    },
+                    outputMap: goodOutputMap,
+                };
+
+                newBlockchain.addBlock({
+                    data: [goodTransaction, rewardTransaction],
+                });
+
+                const goodOutputMap2 = {
+                    [wallet.publicKey]: STARTING_BALANCE - 10,
+                    fooRecipient: 10,
+                };
+                const goodTransaction2 = {
+                    input: {
+                        timestamp: Date.now(),
+                        amount: wallet.balance,
+                        address: wallet.publicKey,
+                        signature: wallet.sign(goodOutputMap2),
+                    },
+                    outputMap: goodOutputMap2,
+                };
+                newBlockchain.addBlock({
+                    data: [goodTransaction2, rewardTransaction],
+                });
             });
 
             describe("when the new chain is invalid", () => {
@@ -165,7 +204,7 @@ describe("Blockchain", () => {
                     expect(blockchain.chain).toEqual(newBlockchain.chain);
                 });
 
-                it("logs a successs message", () => {
+                it("logs a success message", () => {
                     expect(logMock).toHaveBeenCalled();
                 });
             });
