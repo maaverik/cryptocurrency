@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Blocks from "./Blocks";
 import logo from "../logo.png";
-function App() {
+
+function Main() {
     const [walletInfo, setWalletInfo] = useState({ address: "", balance: 0 });
 
     const fetchAndSetWalletInfo = async () => {
@@ -16,7 +17,7 @@ function App() {
     }, []);
 
     return (
-        <div className="App">
+        <div>
             <img className="logo" src={logo} alt="logo"></img>
             <br />
             <h2>Blockchain and cryptocurrency app</h2>
@@ -26,9 +27,8 @@ function App() {
                 <div> Balance: {walletInfo.balance}</div>
             </div>
             <br />
-            <Blocks />
         </div>
     );
 }
 
-export default App;
+export default Main;
