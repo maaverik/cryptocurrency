@@ -1,38 +1,45 @@
+body {
+    background-color: #444;
+    color: #fff;
+    text-align: center;
+    font-size: 20px;
+    font-family: "Quicksand";
+    padding-top: 5%;
+    word-wrap: break-word;
+}
+
+.logo {
+    width: 250px;
+    height: 250px;
+}
+
 .App {
-  text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.WalletInfo {
+    width: 500px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.Block {
+    border: 1px solid #fff;
+    padding: 5%;
+    margin: 2%;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.Transaction {
+    padding: 5%;
 }
 
-.App-link {
-  color: #61dafb;
+.ConductTransaction,
+.TransactionPool {
+    margin: 10%;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+a,
+a:hover {
+    color: #e66;
+    text-decoration: underline;
 }
