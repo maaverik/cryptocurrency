@@ -1,7 +1,7 @@
 import "../styles/App.css";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
-import Blocks from "./Blocks";
 import logo from "../logo.png";
 
 function Main() {
@@ -20,13 +20,18 @@ function Main() {
         <div>
             <img className="logo" src={logo} alt="logo"></img>
             <br />
+            <br />
+            <Link to="/blocks">Go to Blocks</Link>
+            <br />
+            <Link to="/conduct-transaction">Conduct a transaction</Link>
+            <br />
+            <br />
             <h2>Blockchain and cryptocurrency app</h2>
             <br />
             <div className="WalletInfo">
                 <div> Address: {walletInfo.address}</div>
                 <div> Balance: {walletInfo.balance}</div>
             </div>
-            <br />
         </div>
     );
 }
