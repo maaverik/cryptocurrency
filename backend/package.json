@@ -1,0 +1,31 @@
+{
+    "name": "blockchain",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "jest --watchAll",
+        "start": "node src/index.js",
+        "dev": "npm run start-redis && nodemon src/index.js",
+        "start-redis": "redis-server --daemonize yes",
+        "dev-peer": "cross-env GENERATE_PEER_PORT='true' nodemon src/index.js"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "cross-env": "^7.0.3",
+        "eslint": "^8.3.0",
+        "jest": "^27.3.1",
+        "nodemon": "^2.0.15"
+    },
+    "dependencies": {
+        "axios": "^0.24.0",
+        "body-parser": "^1.19.0",
+        "elliptic": "^6.5.4",
+        "express": "^4.17.1",
+        "hex-to-binary": "^1.0.1",
+        "redis": "^3.1.2",
+        "uuid": "^8.3.2"
+    }
+}
