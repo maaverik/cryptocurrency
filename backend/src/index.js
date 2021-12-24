@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const axios = require("axios");
+const cors = require("cors");
 
 const Blockchain = require("./blockchain");
 const PubSub = require("./app/pubsub");
@@ -9,6 +10,8 @@ const Wallet = require("./wallet");
 const TransactionMiner = require("./app/transaction-miner");
 
 const app = express();
+app.use(cors());
+
 const blockchain = new Blockchain();
 const transactionPool = new TransactionPool();
 const pubsub = new PubSub({ blockchain, transactionPool });
