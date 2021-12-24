@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Block from "./Block";
 
 function Blocks() {
     const [blocks, setBlocks] = useState([]);
@@ -18,11 +19,7 @@ function Blocks() {
             <h3>Blocks</h3>
             <div>
                 {blocks.map((block) => {
-                    return (
-                        <div key={block.hash} className="Block">
-                            {block.hash}
-                        </div>
-                    );
+                    return <Block key={block.hash} block={block} />;
                 })}
             </div>
         </div>

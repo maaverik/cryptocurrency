@@ -1,8 +1,8 @@
-import "./App.css";
+import "../styles/App.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Blocks from "./Blocks";
-import logo from "./logo.png";
+import logo from "../logo.png";
 function App() {
     const [walletInfo, setWalletInfo] = useState({ address: "", balance: 0 });
 
