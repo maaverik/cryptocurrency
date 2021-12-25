@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { Button } from "react-bootstrap";
 import axios from "axios";
 import Transaction from "./Transaction";
 
@@ -7,6 +8,8 @@ const POLL_INTERVAL = 10000; // milliseconds
 
 function TransactionPool() {
     const [transactionPoolMap, setTransactionPoolMap] = useState({});
+    const navigate = useNavigate();
+
     const fetchAndSetMap = async () => {
         const response = await axios.get(
             "http://localhost:5100/api/transaction-pool-map"
@@ -16,8 +19,21 @@ function TransactionPool() {
 
     useEffect(() => {
         fetchAndSetMap();
-        setInterval(() => fetchAndSetMap(), POLL_INTERVAL);
+        const reference = setInterval(() => fetchAndSetMap(), POLL_INTERVAL);
+        return () => clearInterval(reference); // prevent memory leak
     }, []);
+
+    const mineTransactions = async () => {
+        const response = await axios.get(
+            "http://localhost:5100/api/mine-transactions"
+        );
+        if (response.status === 200) {
+            alert("success");
+            navigate("/blocks");
+        } else {
+            alert("mining failed");
+        }
+    };
 
     return (
         <div className="TransactionPool">
@@ -30,6 +46,10 @@ function TransactionPool() {
                     <hr /> <Transaction transaction={transaction} />{" "}
                 </div>
             ))}
+            <hr />
+            <Button variant="danger" onClick={mineTransactions}>
+                Mine transactions
+            </Button>
         </div>
     );
 }
