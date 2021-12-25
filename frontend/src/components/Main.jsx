@@ -25,6 +25,8 @@ function Main() {
             <br />
             <Link to="/conduct-transaction">Conduct a transaction</Link>
             <br />
+            <Link to="/transaction-pool">Transaction Pool</Link>
+            <br />
             <br />
             <h2>Blockchain and cryptocurrency app</h2>
             <br />

@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { FormGroup, FormControl, Button } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 function ConductTransaction() {
     const [recipient, setRecipient] = useState("");
     const [amount, setAmount] = useState("");
+    const navigate = useNavigate();
 
     const conductTransaction = async () => {
         const response = await axios.post(
@@ -13,6 +14,7 @@ function ConductTransaction() {
             { recipient, amount }
         );
         alert(response.data.type);
+        navigate("/transaction-pool");
     };
 
     return (
