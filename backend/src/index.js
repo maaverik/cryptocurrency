@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const axios = require("axios");
 const cors = require("cors");
+const path = require("path");
 
 const Blockchain = require("./blockchain");
 const PubSub = require("./app/pubsub");
@@ -9,12 +10,18 @@ const TransactionPool = require("./transaction-pool");
 const Wallet = require("./wallet");
 const TransactionMiner = require("./app/transaction-miner");
 
+const isDevelopment = process.env.ENV === "development";
 const app = express();
-app.use(cors());
+
+const DEFAULT_PORT = 5100;
+const ROOT_NODE_ADDRESS = `http://localhost:${DEFAULT_PORT}`;
+const REDIS_URL = isDevelopment
+    ? "redis://127.0.0.1:6379" // default local address
+    : "redis://:pe48c48b4fa9b515aabff9fe1d4917ed945ac17bdcd0b553922ab7c48d29e9c3d@ec2-54-144-31-38.compute-1.amazonaws.com:29489";
 
 const blockchain = new Blockchain();
 const transactionPool = new TransactionPool();
-const pubsub = new PubSub({ blockchain, transactionPool });
+const pubsub = new PubSub({ blockchain, transactionPool, redisUrl: REDIS_URL });
 const wallet = new Wallet();
 const transactionMiner = new TransactionMiner({
     blockchain,
@@ -23,10 +30,60 @@ const transactionMiner = new TransactionMiner({
     pubsub,
 });
 
-const DEFAULT_PORT = 5100;
-const ROOT_NODE_ADDRESS = `http://localhost:${DEFAULT_PORT}`;
+if (isDevelopment) {
+    const wallet1 = new Wallet();
+    const wallet2 = new Wallet();
+
+    const generateWalletTransaction = ({ wallet, recipient, amount }) => {
+        const transaction = wallet.createTransaction({
+            recipient,
+            amount,
+            chain: blockchain.chain,
+        });
+        transactionPool.setTransaction(transaction);
+    };
+
+    const walletAction = () =>
+        generateWalletTransaction({
+            wallet,
+            recipient: wallet1.publicKey,
+            amount: 10,
+        });
+
+    const wallet1Action = () =>
+        generateWalletTransaction({
+            wallet: wallet1,
+            recipient: wallet2.publicKey,
+            amount: 15,
+        });
+
+    const wallet2Action = () =>
+        generateWalletTransaction({
+            wallet: wallet,
+            recipient: wallet1.publicKey,
+            amount: 20,
+        });
+
+    for (let i = 0; i < 10; i++) {
+        if (i % 3 == 1) {
+            walletAction();
+            wallet1Action();
+        } else if (i % 3 == 2) {
+            walletAction();
+            wallet2Action();
+        } else {
+            wallet1Action();
+            wallet2Action();
+        }
+
+        transactionMiner.mineTransactions();
+    }
+}
 
 app.use(bodyParser.json());
+app.use(cors());
+// eslint-disable-next-line no-undef
+app.use(express.static(path.join(__dirname, "client/dist")));
 
 // get current blocks in chain
 app.get("/api/blocks", (req, res) => {
@@ -92,6 +149,12 @@ app.get("/api/wallet", (req, res) => {
     });
 });
 
+// serve frontend HTML for each peer
+// app.get("*", (req, res) => {
+//     // eslint-disable-next-line no-undef
+//     res.sendFile(path.join(__dirname, "../../frontend/public/index copy.html"));
+// });
+
 // sync new peer with existing root peer to get longest valid chain
 const syncChains = async () => {
     const response = await axios
@@ -146,7 +209,7 @@ if (process.env.GENERATE_PEER_PORT === "true") {
     PEER_PORT = DEFAULT_PORT + Math.ceil(Math.random() * 1000);
 }
 
-const PORT = PEER_PORT || DEFAULT_PORT;
+const PORT = process.env.PORT || PEER_PORT || DEFAULT_PORT;
 app.listen(PORT, () => {
     console.log(`App listening on localhost:${PORT}`);
     if (PORT !== DEFAULT_PORT) {
