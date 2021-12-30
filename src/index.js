@@ -13,11 +13,16 @@ const TransactionMiner = require("./app/transaction-miner");
 const isDevelopment = process.env.ENV === "development";
 const app = express();
 
+app.use(bodyParser.json());
+app.use(cors());
+// serve frontend from express
+app.use(express.static(path.join(__dirname, "../frontend/build")));
+
 const DEFAULT_PORT = 5100;
 const ROOT_NODE_ADDRESS = `http://localhost:${DEFAULT_PORT}`;
 const REDIS_URL = isDevelopment
     ? "redis://127.0.0.1:6379" // default local address
-    : "redis://:pe48c48b4fa9b515aabff9fe1d4917ed945ac17bdcd0b553922ab7c48d29e9c3d@ec2-54-144-31-38.compute-1.amazonaws.com:29489";
+    : "redis://:pe48c48b4fa9b515aabff9fe1d4917ed945ac17bdcd0b553922ab7c48d29e9c3d@ec2-54-144-31-38.compute-1.amazonaws.com:29489"; // heroku redis add on
 
 const blockchain = new Blockchain();
 const transactionPool = new TransactionPool();
@@ -79,13 +84,6 @@ if (isDevelopment) {
         transactionMiner.mineTransactions();
     }
 }
-
-app.use(bodyParser.json());
-app.use(cors());
-
-// serve frontend from express
-// eslint-disable-next-line no-undef
-app.use(express.static(path.join(__dirname, "../../frontend/build")));
 
 // get current blocks in chain
 app.get("/api/blocks", (req, res) => {
@@ -154,7 +152,7 @@ app.get("/api/wallet", (req, res) => {
 // serve frontend HTML for each peer
 app.get("*", (req, res) => {
     // eslint-disable-next-line no-undef
-    res.sendFile(path.join(__dirname, "../../frontend/build/index.html"));
+    res.sendFile(path.join(__dirname, "../frontend/build/index.html"));
 });
 
 // sync new peer with existing root peer to get longest valid chain
