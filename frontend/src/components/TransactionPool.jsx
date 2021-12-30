@@ -12,7 +12,7 @@ function TransactionPool() {
 
     const fetchAndSetMap = async () => {
         const response = await axios.get(
-            "http://localhost:5100/api/transaction-pool-map"
+            `${document.location.origin}/api/transaction-pool-map`
         );
         setTransactionPoolMap(response.data);
     };
@@ -25,7 +25,7 @@ function TransactionPool() {
 
     const mineTransactions = async () => {
         const response = await axios.get(
-            "http://localhost:5100/api/mine-transactions"
+            `${document.location.origin}/api/mine-transactions`
         );
         if (response.status === 200) {
             alert("success");

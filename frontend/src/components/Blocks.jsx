@@ -7,7 +7,9 @@ function Blocks() {
     const [blocks, setBlocks] = useState([]);
 
     const fetchAndSetBlocks = async () => {
-        const blocks = await axios.get("http://localhost:5100/api/blocks");
+        const blocks = await axios.get(
+            `${document.location.origin}/api/blocks`
+        );
         setBlocks(blocks.data);
     };
 

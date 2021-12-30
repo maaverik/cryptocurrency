@@ -8,7 +8,9 @@ function Main() {
     const [walletInfo, setWalletInfo] = useState({ address: "", balance: 0 });
 
     const fetchAndSetWalletInfo = async () => {
-        const walletInfo = await axios.get("http://localhost:5100/api/wallet");
+        const walletInfo = await axios.get(
+            `${document.location.origin}/api/wallet`
+        );
         setWalletInfo(walletInfo.data);
     };
 

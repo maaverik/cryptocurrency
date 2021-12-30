@@ -24,6 +24,8 @@ const REDIS_URL = isDevelopment
     ? "redis://127.0.0.1:6379" // default local address
     : "redis://:pe48c48b4fa9b515aabff9fe1d4917ed945ac17bdcd0b553922ab7c48d29e9c3d@ec2-54-144-31-38.compute-1.amazonaws.com:29489"; // heroku redis add on
 
+console.log(REDIS_URL);
+
 const blockchain = new Blockchain();
 const transactionPool = new TransactionPool();
 const pubsub = new PubSub({ blockchain, transactionPool, redisUrl: REDIS_URL });

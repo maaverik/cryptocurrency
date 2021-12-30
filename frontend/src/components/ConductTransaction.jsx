@@ -10,7 +10,7 @@ function ConductTransaction() {
 
     const conductTransaction = async () => {
         const response = await axios.post(
-            "http://localhost:5100/api/transaction",
+            `${document.location.origin}/api/transaction`,
             { recipient, amount }
         );
         alert(response.data.type);
