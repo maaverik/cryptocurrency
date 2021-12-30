@@ -13,6 +13,7 @@ class TransactionMiner {
         const validTransactions = this.transactionPool.validTransactions();
 
         // generate miner's reward
+        // this also makes data to be mined unique for all miners so that getting right nonce for POW becomes truly randomized
         const reward = Transaction.rewardTransaction({
             minerWallet: this.wallet,
         });

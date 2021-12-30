@@ -82,8 +82,10 @@ if (isDevelopment) {
 
 app.use(bodyParser.json());
 app.use(cors());
+
+// serve frontend from express
 // eslint-disable-next-line no-undef
-app.use(express.static(path.join(__dirname, "client/dist")));
+app.use(express.static(path.join(__dirname, "../../frontend/build")));
 
 // get current blocks in chain
 app.get("/api/blocks", (req, res) => {
@@ -150,10 +152,10 @@ app.get("/api/wallet", (req, res) => {
 });
 
 // serve frontend HTML for each peer
-// app.get("*", (req, res) => {
-//     // eslint-disable-next-line no-undef
-//     res.sendFile(path.join(__dirname, "../../frontend/public/index copy.html"));
-// });
+app.get("*", (req, res) => {
+    // eslint-disable-next-line no-undef
+    res.sendFile(path.join(__dirname, "../../frontend/build/index.html"));
+});
 
 // sync new peer with existing root peer to get longest valid chain
 const syncChains = async () => {
