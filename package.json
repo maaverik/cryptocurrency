@@ -5,7 +5,7 @@
     "main": "src/index.js",
     "scripts": {
         "test": "jest --watchAll",
-        "start": "build-frontend & node src/index.js",
+        "start": "npm run build-frontend & node src/index.js",
         "dev": "npm run build-frontend && npm run start-redis && cross-env ENV='development' nodemon src/index.js",
         "start-redis": "redis-server --daemonize yes",
         "dev-peer": "cross-env GENERATE_PEER_PORT='true' ENV='development' nodemon src/index.js",

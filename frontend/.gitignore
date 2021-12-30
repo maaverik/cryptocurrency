@@ -9,7 +9,7 @@
 /coverage
 
 # production
-# /build    // adding build to git to use frontend from express
+/build
 
 # misc
 .DS_Store
