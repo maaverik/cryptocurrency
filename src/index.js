@@ -1,7 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const axios = require("axios");
-const cors = require("cors");
 const path = require("path");
 
 const Blockchain = require("./blockchain");
@@ -14,7 +13,6 @@ const isDevelopment = process.env.ENV === "development";
 const app = express();
 
 app.use(bodyParser.json());
-app.use(cors());
 // serve frontend from express
 app.use(express.static(path.join(__dirname, "../frontend/build")));
 
