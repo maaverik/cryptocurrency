@@ -17,7 +17,9 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "../frontend/build")));
 
 const DEFAULT_PORT = 5100;
-const ROOT_NODE_ADDRESS = `http://localhost:${DEFAULT_PORT}`;
+const ROOT_NODE_ADDRESS = isDevelopment
+    ? `http://localhost:${DEFAULT_PORT}`
+    : "https://thawing-mountain-05200.herokuapp.com";
 const REDIS_URL = isDevelopment
     ? "redis://127.0.0.1:6379" // default local address
     : "redis://:pe48c48b4fa9b515aabff9fe1d4917ed945ac17bdcd0b553922ab7c48d29e9c3d@ec2-54-144-31-38.compute-1.amazonaws.com:29489"; // heroku redis add on
