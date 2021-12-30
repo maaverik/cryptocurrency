@@ -21,6 +21,7 @@ const ROOT_NODE_ADDRESS = `http://localhost:${DEFAULT_PORT}`;
 const REDIS_URL = isDevelopment
     ? "redis://127.0.0.1:6379" // default local address
     : "redis://:pe48c48b4fa9b515aabff9fe1d4917ed945ac17bdcd0b553922ab7c48d29e9c3d@ec2-54-144-31-38.compute-1.amazonaws.com:29489"; // heroku redis add on
+const BLOCKS_PER_PAGE = 5;
 
 const blockchain = new Blockchain();
 const transactionPool = new TransactionPool();
@@ -88,6 +89,25 @@ app.get("/api/blocks", (req, res) => {
     res.json(blockchain.chain);
 });
 
+// get length of current blockchain for pagination
+app.get("/api/blocks/length", (req, res) => {
+    res.json(blockchain.chain.length);
+});
+
+// display blocks in paginated form of BLOCKS_PER_PAGE blocks each
+app.get("/api/blocks/:pageId", (req, res) => {
+    const { pageId } = req.params;
+    const blocks = blockchain.chain.slice().reverse();
+
+    let start = (pageId - 1) * BLOCKS_PER_PAGE;
+    let end = pageId * 5;
+
+    const { length } = blockchain.chain;
+    start = start < length ? start : length;
+    end = end < length ? end : length;
+    res.json(blocks.slice(start, end));
+});
+
 // mine a new block on chain with given data
 app.post("/api/block", (req, res) => {
     const { data } = req.body;
@@ -145,6 +165,20 @@ app.get("/api/wallet", (req, res) => {
             address,
         }),
     });
+});
+
+// get list of known wallet addresses in the blockchain to transact to
+app.get("/api/known-addresses", (req, res) => {
+    const addressMap = {}; // object instead of list to avoid duplicates
+    for (let block of blockchain.chain) {
+        for (let transaction of block.data) {
+            const recipients = Object.keys(transaction.outputMap);
+            recipients.forEach(
+                (recipient) => (addressMap[recipient] = recipient)
+            );
+        }
+    }
+    res.json(Object.keys(addressMap));
 });
 
 // serve frontend HTML for each peer
