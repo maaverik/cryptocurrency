@@ -36,7 +36,7 @@ function Blocks() {
                 <Button
                     size="small"
                     variant="danger"
-                    onClick={() => fetchPaginatedBlocks(id)}
+                    onClick={() => setPageId(id)}
                 >
                     {id}
                 </Button>{" "}
